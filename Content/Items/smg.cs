@@ -13,7 +13,7 @@ namespace helluvia01.Content.Items
 	// https://github.com/tModLoader/tModLoader/tree/stable/ExampleMod
 	public class smg : ModItem
 	{
-		
+
 		public new string LocalizationCategory => "Items.Weapons.Ranged";
 		 private static readonly float XYInaccuracy = 8.25f;
 		 private static readonly float XYInaccuracy2 = 8.25f;
@@ -40,7 +40,7 @@ namespace helluvia01.Content.Items
 			Item.color = Color.White;
 		}
 
-		
+
 		public override Vector2? HoldoutOffset() => new Vector2(-20, 9);
 
 
@@ -58,7 +58,7 @@ namespace helluvia01.Content.Items
 
 		velocity.X += Main.rand.NextFloat(-XYInaccuracy, XYInaccuracy);
 		velocity.Y += Main.rand.NextFloat(-XYInaccuracy, XYInaccuracy);
-		
+
 		Vector2 vel = velocity;
 		Vector2 muzzle = position + Vector2.Normalize(velocity) * 35f;
 
@@ -67,7 +67,7 @@ namespace helluvia01.Content.Items
 		Vector2 vel2 = velocity;
 
 
-			
+
 		Projectile shot = Projectile.NewProjectileDirect(source, position, vel, type, damage, knockback, player.whoAmI);
 
 		for (int i = 0; i <= 1; i++)
@@ -80,22 +80,22 @@ namespace helluvia01.Content.Items
 		player.direction,
 		yOffset);
 		}
-		
+
 
 		Vector2 secondPosition = position;
 		secondPosition.Y += 5f; // up; use +10f to move it down
 
 		Projectile shot2 = Projectile.NewProjectileDirect(source, secondPosition, vel2, type, damage, knockback, player.whoAmI);
 
-		
+
 		var dust = Dust.NewDustPerfect(muzzle, DustID.InfernoFork,
 				velocity * 0.1f, 100, Color.Orange, 1.2f);
 			dust.noGravity = true;
 			dust.scale = 50;
-			
 
-		
-		
+
+
+
 		Vector2 mouseWorld = Main.MouseWorld + new Vector2(2f, 2f);
 
 

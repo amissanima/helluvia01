@@ -38,7 +38,7 @@ public override void OnSpawn(IEntitySource source)
             direction.Normalize();
         Projectile.scale = 1.1f;
 
-        
+
 
         Vector2 center = player.MountedCenter
         + direction * DistanceFromPlayer;;

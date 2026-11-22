@@ -2,15 +2,15 @@
 # Please read https://github.com/tModLoader/tModLoader/wiki/Localization to learn more about localization and these files.
 
 Items: {
-	 Items: {
-      EmberShotgun: {
-        DisplayName: Ember Pump
-        Tooltip: "Fires seven energy pellets. Each hit fractures 1% of the target's defense for 4 seconds (up to 30%).\nRecharges in 5 seconds, even when holstered."
-      }
-    }
-    Projectiles: {
-      EnergyPellet.DisplayName: Ember pellet
-    }
+	EmberShotgun: {
+		DisplayName: Ember Pump
+		Tooltip:
+			'''
+			Fires seven energy pellets. Each hit fractures 1% of defense for 4 seconds (up to 30%).
+			Recharges in 5 seconds, even when holstered.
+			'''
+	}
+
 	qwe: {
 		DisplayName: qwe
 		Tooltip:
@@ -28,6 +28,7 @@ Items: {
 }
 
 Projectiles: {
+	EnergyPellet.DisplayName: Ember pellet
 	MuzzleFlash.DisplayName: Muzzle Flash
 	gunflash01.DisplayName: gunflash01
 	WhiteCrossProjectile.DisplayName: White Cross Projectile
