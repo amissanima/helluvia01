@@ -1,0 +1,24 @@
+{
+  "name": "qwe-melee-hit",
+  "mechanic": "The equipped Shackle grants defence and a real qwe swing damages a stationary NPC.",
+  "initial": {"target": {"npc": "Terraria/BlueSlime", "offset": [24, -6], "health": 1000}},
+  "items": [
+    {"item": "helluvia01/qwe", "slot": 0, "quantity": 1},
+    {"item": "Terraria/LesserHealingPotion", "slot": 1, "quantity": 3},
+    {"item": "Terraria/Shackle", "slot": 12, "quantity": 1}
+  ],
+  "requireAttack": true,
+  "selectedSlot": 0,
+  "steps": [
+    {"op": "sample", "metric": "player.statDefense", "name": "unarmored"},
+    {"op": "equip", "item": "Terraria/Shackle", "slot": 3},
+    {"op": "await", "metric": "player.statDefense", "relativeTo": "unarmored", "eq": 1, "timeout": 60},
+    {"op": "press", "button": "primary", "aimOffset": [24, -6], "ticks": 1},
+    {"op": "capture", "name": "swing"},
+    {"op": "await", "metric": "target.hits", "min": 1, "timeout": 30},
+    {"op": "assert", "metric": "target.damage", "min": 1},
+    {"op": "assert", "metric": "target.life", "max": 999},
+    {"op": "await", "metric": "animation", "eq": 0, "timeout": 60}
+  ],
+  "timeoutTicks": 600
+}

@@ -5,7 +5,7 @@
 
 	<!-- General -->
 	<PropertyGroup>
-		
+		<DefaultItemExcludes>$(DefaultItemExcludes);testing/**</DefaultItemExcludes>
 	</PropertyGroup>
 
 	<!-- References -->

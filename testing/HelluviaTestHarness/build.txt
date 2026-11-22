@@ -1,0 +1,5 @@
+displayName = Helluvia Gameplay Test Harness
+author = helluvia01
+version = 0.1
+modReferences = helluvia01
+side = Client

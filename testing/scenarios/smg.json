@@ -1,0 +1,13 @@
+{
+  "name": "smg-single-shot",
+  "mechanic": "One use of the SMG fires two high velocity rounds and two muzzle flashes with musket ammunition.",
+  "weapon": {"item": "helluvia01/smg", "slot": 0},
+  "ammo": {"item": "Terraria/MusketBall", "slot": 54, "quantity": 10},
+  "action": {"aimOffset": [220, -32], "holdTicks": 1},
+  "expect": {
+    "uses": 1,
+    "projectiles": {"Terraria/BulletHighVelocity": 2, "helluvia01/WhiteCrossProjectile": 2},
+    "ammoRemaining": [9, 10]
+  },
+  "timeoutTicks": 600
+}

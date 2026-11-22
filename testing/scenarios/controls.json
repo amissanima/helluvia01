@@ -1,0 +1,22 @@
+{
+  "name": "quick-buff-and-secondary-use",
+  "mechanic": "Quick Buff consumes one Ironskin Potion and applies its buff. A right-button use of Sky Dragon's Fury produces its alternate projectile.",
+  "initial": {},
+  "items": [
+    {"item": "Terraria/MonkStaffT3", "slot": 3, "quantity": 1},
+    {"item": "Terraria/IronskinPotion", "slot": 15, "quantity": 2}
+  ],
+  "selectedSlot": 3,
+  "steps": [
+    {"op": "assert", "metric": "buff/Terraria/Ironskin", "eq": 0},
+    {"op": "hotkey", "name": "Terraria/QuickBuff"},
+    {"op": "await", "metric": "buff/Terraria/Ironskin", "eq": 1, "timeout": 30},
+    {"op": "assert", "metric": "stack/15", "eq": 1},
+    {"op": "press", "button": "alternate", "aimOffset": [170,-15], "ticks": 4},
+    {"op": "assert", "metric": "attacks", "eq": 1},
+    {"op": "assert", "metric": "spawned/Terraria/MonkStaffT3_Alt", "eq": 1},
+    {"op": "assert", "metric": "spawned/Terraria/MonkStaffT3", "eq": 0},
+    {"op": "capture", "name": "alternate-use"}
+  ],
+  "timeoutTicks": 600
+}
