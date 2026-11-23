@@ -2,6 +2,20 @@
 # Please read https://github.com/tModLoader/tModLoader/wiki/Localization to learn more about localization and these files.
 
 Items: {
+	SakuraKatana: {
+		DisplayName: Sakura Katana
+		Tooltip:
+			'''
+			Hold left click for a three-cut combo. Right click releases a flowering crescent.
+			Carry in your hotbar to wear the blade and scatter petals.
+			'''
+	}
+
+	EmberSniper: {
+		DisplayName: Ember Longshot
+		Tooltip: Charges for 0.4 seconds. Distant hits deal up to double damage. Recharges in 8 seconds.
+	}
+
 	EmberShotgun: {
 		DisplayName: Ember Pump
 		Tooltip:
@@ -27,7 +41,68 @@ Items: {
 	}
 }
 
+Sakura.ParticleDiagnostics: Sakura   {0} active   +{1}/frame   {2} skipped   update {3} ms   draw {4} ms
+
+Configs: {
+	SakuraVisualConfig: {
+		DisplayName: Sakura effects
+
+		Quality: {
+			Label: Quality
+			Tooltip: Controls petal density, emission frequency and lifetime.
+		}
+
+		ParticleLimit: {
+			Label: Particle limit
+			Tooltip: Maximum number of live decorative particles across all players.
+		}
+
+		SpawnBudget: {
+			Label: Particles per frame
+			Tooltip: Maximum new particles shared by all emitters in a rendered frame.
+		}
+
+		AuraLimit: {
+			Label: Aura per player
+			Tooltip: Maximum number of aura particles attached to each player.
+		}
+
+		Diagnostics: {
+			Label: Diagnostics
+			Tooltip: Show particle counts and CPU time spent updating and submitting draws.
+		}
+	}
+
+	SakuraQuality: {
+		Low: {
+			Label: Low
+			Tooltip: ""
+		}
+
+		Medium: {
+			Label: Medium
+			Tooltip: ""
+		}
+
+		High: {
+			Label: High
+			Tooltip: ""
+		}
+
+		Ultra: {
+			Label: Ultra
+			Tooltip: ""
+		}
+
+		Tooltip: ""
+	}
+}
+
 Projectiles: {
+	SakuraSwing.DisplayName: Sakura slash
+	SakuraCrescent.DisplayName: Flowering crescent
+	SakuraBloom.DisplayName: Sakura bloom
+	EmberRound.DisplayName: Ember round
 	EnergyPellet.DisplayName: Ember pellet
 	MuzzleFlash.DisplayName: Muzzle Flash
 	gunflash01.DisplayName: gunflash01

@@ -24,7 +24,7 @@ public sealed class ScriptScenario : ModSystem
     private readonly Dictionary<string, double> samples = new();
     private readonly HashSet<string> captures = new();
     private readonly Dictionary<int, int> spawned = new(), killed = new();
-    private readonly Dictionary<int, int> ownedShots = new(); // whoAmI -> type, removed on death
+    private readonly Dictionary<int, (int Type, int Item)> ownedShots = new();
     private Func<Player, int> shotgunRemaining;
     private Player Player => Main.LocalPlayer;
     internal static ScriptScenario Active
@@ -254,19 +254,27 @@ public sealed class ScriptScenario : ModSystem
 
     internal void Spawn(Projectile shot, IEntitySource source)
     {
-        if (source is not IEntitySource_WithStatsFromItem from || from.Player != Player ||
-            shot.owner != Player.whoAmI || from.Item != Player.HeldItem)
+        if (shot.owner != Player.whoAmI)
             return;
-        ownedShots[shot.whoAmI] = shot.type;
+        int originItem;
+        if (source is IEntitySource_WithStatsFromItem from && from.Player == Player && from.Item == Player.HeldItem)
+            originItem = from.Item.type;
+        else if (source is EntitySource_Parent { Entity: Projectile parent } &&
+            ownedShots.TryGetValue(parent.whoAmI, out var tracked) && tracked.Type == parent.type)
+            originItem = tracked.Item;
+        else
+            return;
+        ownedShots[shot.whoAmI] = (shot.type, originItem);
         spawned[shot.type] = spawned.GetValueOrDefault(shot.type) + 1;
-        Entry.Emit("projectile", new { shot.type, shot.identity, shot.owner, item = from.Item.type,
+        Entry.Emit("projectile", new { shot.type, shot.identity, shot.owner, item = originItem, mode = shot.ai[0],
             x = shot.Center.X, y = shot.Center.Y, vx = shot.velocity.X, vy = shot.velocity.Y });
     }
 
     internal void Killed(Projectile shot)
     {
-        if (ownedShots.Remove(shot.whoAmI, out int type))
+        if (ownedShots.Remove(shot.whoAmI, out var tracked))
         {
+            int type = tracked.Type;
             killed[type] = killed.GetValueOrDefault(type) + 1;
             Entry.Emit("projectileKilled", new { shot.identity, type });
         }

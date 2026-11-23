@@ -2,13 +2,27 @@
 # Please read https://github.com/tModLoader/tModLoader/wiki/Localization to learn more about localization and these files.
 
 Items: {
-	EmberShotgun: {
-		DisplayName: Жаровой помповик
+	SakuraKatana: {
+		DisplayName: Катана сакуры
 		Tooltip:
 			'''
-			Выпускает семь энергетических дробин. Каждое попадание снижает защиту цели на 1% на 4 секунды (до 30%).
-			Перезаряжается за 5 секунд, даже если убрать его из рук.
+			Удерживайте ЛКМ для серии из трёх разрезов. ПКМ выпускает цветущий серп.
+			В панели быстрого доступа катана крепится у бедра и окружает персонажа лепестками.
 			'''
+	}
+
+	EmberSniper: {
+		// DisplayName: Ember Longshot
+		// Tooltip: Charges for 0.4 seconds. Distant hits deal up to double damage. Recharges in 8 seconds.
+	}
+
+	EmberShotgun: {
+		// DisplayName: Ember Pump
+		/* Tooltip:
+			'''
+			Fires seven energy pellets. Each hit fractures 1% of defense for 4 seconds (up to 30%).
+			Recharges in 5 seconds, even when holstered.
+			''' */
 	}
 
 	qwe: {
@@ -27,8 +41,69 @@ Items: {
 	}
 }
 
+Sakura.ParticleDiagnostics: Сакура   {0} активно   +{1}/кадр   {2} пропущено   обновление {3} мс   отрисовка {4} мс
+
+Configs: {
+	SakuraVisualConfig: {
+		DisplayName: Эффекты сакуры
+
+		Quality: {
+			Label: Качество
+			Tooltip: Плотность лепестков, частота их появления и время жизни.
+		}
+
+		ParticleLimit: {
+			Label: Лимит частиц
+			Tooltip: Максимальное число одновременно живущих декоративных частиц у всех игроков.
+		}
+
+		SpawnBudget: {
+			Label: Новых частиц за кадр
+			Tooltip: Общий предел появления частиц за отрисованный кадр.
+		}
+
+		AuraLimit: {
+			Label: Аура одного игрока
+			Tooltip: Максимальное число частиц ауры вокруг каждого игрока.
+		}
+
+		Diagnostics: {
+			Label: Диагностика
+			Tooltip: Показывает число частиц и время процессора на обновление и отрисовку.
+		}
+	}
+
+	SakuraQuality: {
+		Low: {
+			Label: Низкое
+			// Tooltip: ""
+		}
+
+		Medium: {
+			Label: Среднее
+			// Tooltip: ""
+		}
+
+		High: {
+			Label: Высокое
+			// Tooltip: ""
+		}
+
+		Ultra: {
+			Label: Ультра
+			// Tooltip: ""
+		}
+
+		// Tooltip: ""
+	}
+}
+
 Projectiles: {
-	EnergyPellet.DisplayName: Раскалённая дробина
+	SakuraSwing.DisplayName: Взмах катаны сакуры
+	SakuraCrescent.DisplayName: Цветущий серп
+	SakuraBloom.DisplayName: Взрыв сакуры
+	// EmberRound.DisplayName: Ember round
+	// EnergyPellet.DisplayName: Ember pellet
 	// MuzzleFlash.DisplayName: Muzzle Flash
 	// gunflash01.DisplayName: gunflash01
 	// WhiteCrossProjectile.DisplayName: White Cross Projectile

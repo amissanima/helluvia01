@@ -14,7 +14,11 @@ namespace helluvia01
     {
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            ShotPackets.Receive(reader, whoAmI);
+            byte kind = reader.ReadByte();
+            if (kind is SakuraHits.Hotbar or SakuraHits.Critical or SakuraHits.Defeat)
+                SakuraHits.Receive(kind, reader, whoAmI);
+            else
+                ShotPackets.Receive(kind, reader, whoAmI);
         }
     }
 
@@ -57,9 +61,9 @@ namespace helluvia01
 
         internal static void SendReady(int target) => Begin(Kind.Ready).Send(target);
 
-        internal static void Receive(BinaryReader reader, int sender)
+        internal static void Receive(byte message, BinaryReader reader, int sender)
         {
-            Kind kind = (Kind)reader.ReadByte();
+            Kind kind = (Kind)message;
             if (Main.netMode == NetmodeID.Server)
             {
                 if ((uint)sender >= Main.maxPlayers)

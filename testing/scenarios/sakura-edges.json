@@ -1,0 +1,30 @@
+{
+  "name": "sakura-edges",
+  "mechanic": "Leftward cuts at night, cancelling a cast, ground impact and expiry in open sky",
+  "sakuraDiagnostics": true,
+  "sakuraQuality": "Low",
+  "initial": {"night":true, "zoom":1.6, "target":{"npc":"Terraria/BlueSlime","offset":[-57,-26],"health":5000}},
+  "items": [{"item":"Terraria/CopperPickaxe","slot":0}, {"item":"helluvia01/SakuraKatana","slot":2}],
+  "selectedSlot": 2,
+  "steps": [
+    {"op":"wait","ticks":80},
+    {"op":"press","button":"primary","aimOffset":[-90,-42],"ticks":15},
+    {"op":"capture","name":"moonlit-cut"},
+    {"op":"wait","ticks":20},
+    {"op":"assert","metric":"target.hits","eq":1},
+    {"op":"press","button":"alternate","aimOffset":[0,-170],"ticks":2},
+    {"op":"select","slot":0},
+    {"op":"wait","ticks":26},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraCrescent","eq":0},
+    {"op":"select","slot":2},
+    {"op":"press","button":"alternate","aimOffset":[4,160],"ticks":1},
+    {"op":"await","metric":"spawned/helluvia01/SakuraBloom","eq":1,"timeout":45},
+    {"op":"capture","name":"ground-impact"},
+    {"op":"wait","ticks":50},
+    {"op":"press","button":"alternate","aimOffset":[40,-190],"ticks":1},
+    {"op":"await","metric":"killed/helluvia01/SakuraCrescent","eq":2,"timeout":110},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraBloom","eq":1},
+    {"op":"assert","metric":"killed/helluvia01/SakuraSwing","eq":4}
+  ],
+  "timeoutTicks": 440
+}

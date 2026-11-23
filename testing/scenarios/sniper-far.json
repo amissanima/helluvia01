@@ -1,0 +1,82 @@
+{
+ "name": "sniper-far",
+ "mechanic": "Charged precision shot with distance scaling",
+ "initial": {
+  "target": {
+   "npc": "Terraria/BlueSlime",
+   "offset": [
+    980,
+    -165
+   ],
+   "health": 5000
+  }
+ },
+ "items": [
+  {
+   "item": "helluvia01/EmberSniper",
+   "slot": 2
+  }
+ ],
+ "selectedSlot": 2,
+ "steps": [
+  {
+   "op": "press",
+   "button": "primary",
+   "aimOffset": [
+    980,
+    -165
+   ],
+   "ticks": 1
+  },
+  {
+   "op": "wait",
+   "ticks": 12
+  },
+  {
+   "op": "capture",
+   "name": "charge"
+  },
+  {
+   "op": "wait",
+   "ticks": 11
+  },
+  {
+   "op": "assert",
+   "metric": "spawned/helluvia01/EmberRound",
+   "eq": 0
+  },
+  {
+   "op": "wait",
+   "ticks": 1
+  },
+  {
+   "op": "assert",
+   "metric": "spawned/helluvia01/EmberRound",
+   "eq": 1
+  },
+  {
+   "op": "capture",
+   "name": "fire"
+  },
+  {
+   "op": "wait",
+   "ticks": 4
+  },
+  {
+   "op": "capture",
+   "name": "tracer"
+  },
+  {
+   "op": "await",
+   "metric": "target.hits",
+   "eq": 1,
+   "timeout": 45
+  },
+  {
+   "op": "assert",
+   "metric": "target.damage",
+   "min": 245
+  }
+ ],
+ "timeoutTicks": 820
+}

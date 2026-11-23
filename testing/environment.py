@@ -111,6 +111,15 @@ def prepare(run, env, scenario_path):
                     WarnedFamilyShareDontShowAgain=True, ShowModMenuNotifications=False,
                     ShowNewUpdatedModsInfo=False)
     (profile / "config.json").write_text(json.dumps(settings))
+    scenario = json.loads(scenario_path.read_text(encoding="utf-8-sig"))
+    if scenario.get("sakuraDiagnostics"):
+        quality = scenario.get("sakuraQuality", "High")
+        if quality not in ("Low", "Medium", "High", "Ultra"):
+            raise ValueError(f"Unknown Sakura quality: {quality}")
+        configs = profile / "ModConfigs"
+        configs.mkdir(exist_ok=True)
+        (configs / "helluvia01_SakuraVisualConfig.json").write_text(
+            json.dumps({"Diagnostics": True, "Quality": quality}))
     sources = profile / "ModSources"
     shutil.copytree(ROOT, sources / MODS[0],
                     ignore=shutil.ignore_patterns(".*", "bin", "obj", "testing", "__pycache__"))

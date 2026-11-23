@@ -1,0 +1,35 @@
+{
+  "name": "sakura-crescent",
+  "mechanic": "Melee range, delayed launch, one bloom per contact and no double hit on the direct target",
+  "initial": {
+    "target": {"npc":"Terraria/BlueSlime", "offset":[220,-25], "health":8000},
+    "nearbyTarget": {"npc":"Terraria/BlueSlime", "offset":[221,-66], "health":8000}
+  },
+  "items": [{"item":"helluvia01/SakuraKatana","slot":2}],
+  "selectedSlot": 2,
+  "sakuraDiagnostics": true,
+  "steps": [
+    {"op":"press","button":"primary","aimOffset":[220,-25],"ticks":1},
+    {"op":"wait","ticks":30},
+    {"op":"assert","metric":"target.hits","eq":0},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraCrescent","eq":0},
+    {"op":"press","button":"alternate","aimOffset":[220,-25],"ticks":3},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraCrescent","eq":0},
+    {"op":"await","metric":"spawned/helluvia01/SakuraCrescent","eq":1,"timeout":24},
+    {"op":"wait","ticks":2},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraBloom","eq":0},
+    {"op":"capture","name":"flight"},
+    {"op":"await","metric":"spawned/helluvia01/SakuraBloom","eq":1,"timeout":30},
+    {"op":"wait","ticks":7},
+    {"op":"capture","name":"bloom"},
+    {"op":"wait","ticks":45},
+    {"op":"assert","metric":"target.hits","eq":1},
+    {"op":"assert","metric":"nearby.hits","eq":1},
+    {"op":"assert","metric":"killed/helluvia01/SakuraBloom","eq":1},
+    {"op":"press","button":"alternate","aimOffset":[220,-25],"ticks":120},
+    {"op":"wait","ticks":65},
+    {"op":"assert","metric":"spawned/helluvia01/SakuraCrescent","min":5},
+    {"op":"assert","metric":"target.hits","min":5}
+  ],
+  "timeoutTicks": 510
+}

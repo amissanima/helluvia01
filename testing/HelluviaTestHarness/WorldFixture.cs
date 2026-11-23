@@ -15,7 +15,13 @@ public sealed class WorldFixture
     internal Player Player { get; }
     public NPC Target { get; private set; }
     private int hits, damage, deaths, respawns;
+    private NPC nearbyTarget;
+    private int nearbyHits;
+    private Vector2 nearbyCenter;
     private Vector2 targetCenter;
+    private bool changedTime, originalDay;
+    private double originalTime;
+    private float? originalZoom;
 
     public WorldFixture(Player player) => Player = player;
 
@@ -25,6 +31,19 @@ public sealed class WorldFixture
             throw new InvalidOperationException("World setup needs a living local test player and a fresh fixture.");
         Current = this;
         initial ??= new JsonObject();
+        if (initial["night"]?.GetValue<bool>() == true)
+        {
+            originalDay = Main.dayTime;
+            originalTime = Main.time;
+            changedTime = true;
+            Main.dayTime = false;
+            Main.time = 16200;
+        }
+        if (initial["zoom"] != null)
+        {
+            originalZoom = Main.GameZoomTarget;
+            Main.GameZoomTarget = Math.Clamp((float)initial["zoom"], 1f, 2f);
+        }
         if (initial["position"] != null && initial["spawnOffset"] != null)
             throw new ArgumentException("Specify only one player position.");
         Vector2? center = null;
@@ -46,7 +65,9 @@ public sealed class WorldFixture
         if (initial["mana"] != null)
             Player.statMana = Within((int)initial["mana"], 0, Player.statManaMax2, "mana");
         if (initial["target"] is JsonObject spec)
-            SpawnTarget(spec);
+            Target = SpawnTarget(spec, out targetCenter);
+        if (initial["nearbyTarget"] is JsonObject nearby)
+            nearbyTarget = SpawnTarget(nearby, out nearbyCenter);
         Entry.Emit("initial", new { x = Player.Center.X, y = Player.Center.Y, life = Player.statLife, mana = Player.statMana });
     }
 
@@ -72,39 +93,47 @@ public sealed class WorldFixture
         return topLeft;
     }
 
-    private void SpawnTarget(JsonObject spec)
+    private NPC SpawnTarget(JsonObject spec, out Vector2 center)
     {
         string name = (string)spec["npc"] ?? "Terraria/BlueSlime";
         int type = name.StartsWith("Terraria/", StringComparison.Ordinal) ? NPCID.Search.GetId(name[9..])
             : ModContent.TryFind<ModNPC>(name, out var modNpc) ? modNpc.Type : -1;
         if (type <= 0 || !ContentSamples.NpcsByNetId.TryGetValue(type, out var sample))
             throw new ArgumentException($"Unknown target NPC {name}.");
-        targetCenter = Player.Center + Coordinates(spec["offset"]);
-        CheckedTopLeft(targetCenter, sample.width, sample.height);
+        center = Player.Center + Coordinates(spec["offset"]);
+        CheckedTopLeft(center, sample.width, sample.height);
         int life = Within((int?)spec["health"] ?? sample.lifeMax, 1, int.MaxValue, "target.health");
-        int index = NPC.NewNPC(new EntitySource_Misc("HelluviaTestTarget"), (int)targetCenter.X, (int)targetCenter.Y, type);
+        int index = NPC.NewNPC(new EntitySource_Misc("HelluviaTestTarget"), (int)center.X, (int)center.Y, type);
         if (index >= Main.maxNPCs)
             throw new InvalidOperationException("No free NPC slot for the test target.");
-        Target = Main.npc[index];
-        Target.Center = targetCenter;
-        Target.lifeMax = Target.life = life;
-        Target.noGravity = Target.noTileCollide = true;
-        Target.knockBackResist = 0;
-        Target.damage = Target.defDamage = 0;
-        Entry.Emit("target", new { name, type, index, life, x = targetCenter.X, y = targetCenter.Y });
+        NPC target = Main.npc[index];
+        target.Center = center;
+        target.lifeMax = target.life = life;
+        target.noGravity = target.noTileCollide = true;
+        target.knockBackResist = 0;
+        target.damage = target.defDamage = 0;
+        Entry.Emit("target", new { name, type, index, life, x = center.X, y = center.Y });
+        return target;
     }
+
+    internal bool IsTarget(NPC npc) => Target == npc || nearbyTarget == npc;
 
     internal bool RunNpcAI(NPC npc)
     {
-        if (Target != npc)
+        if (!IsTarget(npc))
             return true;
-        npc.Center = targetCenter;
+        npc.Center = Target == npc ? targetCenter : nearbyCenter;
         npc.velocity = Vector2.Zero;
         return false;
     }
 
     internal void Hit(NPC npc, string source, int sourceType, int damageDone)
     {
+        if (npc == nearbyTarget)
+        {
+            nearbyHits++;
+            Entry.Emit("nearbyHit", new { npc = npc.whoAmI, sourceType, damageDone, nearbyHits });
+        }
         if (npc != Target)
             return;
         hits++;
@@ -161,6 +190,7 @@ public sealed class WorldFixture
             "player.y" => Player.Center.Y,
             "target.life" when Target != null => Target.active ? Math.Max(0, Target.life) : 0,
             "target.hits" when Target != null => hits,
+            "nearby.hits" when nearbyTarget != null => nearbyHits,
             "target.damage" when Target != null => damage,
             _ => double.NaN
         };
@@ -171,8 +201,17 @@ public sealed class WorldFixture
     {
         if (Current != this)
             return;
+        if (changedTime)
+        {
+            Main.dayTime = originalDay;
+            Main.time = originalTime;
+        }
+        if (originalZoom.HasValue)
+            Main.GameZoomTarget = originalZoom.Value;
         if (Target != null && ReferenceEquals(Main.npc[Target.whoAmI], Target))
             Target.active = false;
+        if (nearbyTarget != null && ReferenceEquals(Main.npc[nearbyTarget.whoAmI], nearbyTarget))
+            nearbyTarget.active = false;
         Current = null;
     }
 }
@@ -180,7 +219,7 @@ public sealed class WorldFixture
 public sealed class FixtureNpc : GlobalNPC
 {
     public override bool PreAI(NPC npc) => WorldFixture.Current?.RunNpcAI(npc) ?? true;
-    public override bool CheckActive(NPC npc) => WorldFixture.Current?.Target != npc;
+    public override bool CheckActive(NPC npc) => WorldFixture.Current?.IsTarget(npc) != true;
 }
 
 public sealed class FixturePlayer : ModPlayer
